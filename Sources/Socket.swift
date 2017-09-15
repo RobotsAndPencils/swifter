@@ -26,17 +26,20 @@ open class Socket: Hashable, Equatable {
         
     let socketFileDescriptor: Int32
     private var shutdown = false
+    static var socketCount: Int64 = 0
+    private var socketHashValue: Int64 = -1
 
-    
     public init(socketFileDescriptor: Int32) {
         self.socketFileDescriptor = socketFileDescriptor
+        Socket.socketCount += 1
+        socketHashValue = Socket.socketCount
     }
     
     deinit {
         close()
     }
     
-    public var hashValue: Int { return Int(self.socketFileDescriptor) }
+    public var hashValue: Int { return Int(socketHashValue) }
     
     public func close() {
         if shutdown {
